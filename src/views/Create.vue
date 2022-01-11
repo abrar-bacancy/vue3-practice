@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col">
-      <div class="card px-5 my-2">
+      <div class="my-2">
         <form @submit.prevent="handleSubmit">
           <label>Title:</label>
           <input class="form-control" v-model="title" type="text" required />
@@ -14,7 +14,14 @@
             v-model="tag"
             type="text"
           />
-          <div v-for="tag in tags" :key="tag" class="pill">#{{ tag }}</div>
+          <div class="my-2">
+            <span
+                class="badge rounded-pill bg-info text-dark me-2"
+                v-for="tag in tags"
+                :key="tag"
+                >#{{ tag }}</span
+              >
+          </div>
           <button class="btn btn-primary">Add Post</button>
         </form>
       </div>
@@ -25,6 +32,8 @@
 <script>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { SAVE_POST } from '../store/mutations.type'
 
 export default {
   setup() {
@@ -34,6 +43,7 @@ export default {
     const tag = ref('')
 
     const router = useRouter()
+    const store = useStore()
 
     const handleKeydown = () => {
       if (!tags.value.includes(tag.value)) {
@@ -49,12 +59,8 @@ export default {
         body: body.value,
         tags: tags.value
       }
-
-      await fetch('http://localhost:3000/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(post)
-      })
+      
+      store.dispatch(SAVE_POST, post)
 
       router.push({ name: 'Home' })
     }

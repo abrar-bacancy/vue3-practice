@@ -1,5 +1,5 @@
 <template>
-  <div class="row px-5 py-2">
+  <div class="row">
     <div class="col">
       <div class="card" v-if="post">
         <div class="card-body">
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { onUnmounted } from '@vue/runtime-core'
 import { useRouter } from 'vue-router'
 import getPost from '../composables/getPost'
 
@@ -32,7 +33,7 @@ export default {
   setup(props) {
     const router = useRouter()
 
-    const { error, post, load } = getPost(props.id)
+    const { post, load, unload } = getPost(props.id)
 
     load()
 
@@ -40,8 +41,11 @@ export default {
       router.back()
     }
 
+    onUnmounted(() => {
+      unload()
+    })
+
     return {
-      error,
       post,
       back
     }

@@ -7,8 +7,8 @@
           <span
             class="badge rounded-pill me-2"
             :class="{
-              'bg-info text-dark': tag == activeTag,
-              'bg-secondary': tag != activeTag
+              'bg-info text-dark': tag == selectedTag,
+              'bg-secondary': tag != selectedTag
             }"
             >#{{ tag }}</span
           >
@@ -19,15 +19,20 @@
 </template>
 
 <script>
-import useTags from '../composables/useTags'
+import { computed } from '@vue/reactivity'
+import { useStore } from 'vuex'
 
 export default {
-  props: ['posts', 'activeTag'],
+  props: ['posts'],
 
-  setup(props) {
-    const { tags } = useTags(props.posts)
+  setup() {
+    const store = useStore()
 
-    return { tags }
+    const tags = computed(() => store.getters.tags)
+
+    const selectedTag = computed(() => store.getters.selectedTag)
+
+    return { tags, selectedTag }
   }
 }
 </script>

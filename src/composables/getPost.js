@@ -1,24 +1,24 @@
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { FETCH_POST } from '../store/actions.type'
+import { SET_POST } from '../store/mutations.type'
 
 const getPost = (id) => {
 
-  const post = ref(null)
-  const error = ref(null)
+  const store = useStore()
 
-  const load = async () => {
-    try {
-      let data = await fetch('http://localhost:3000/posts/' + id)
-      if (!data.ok) {
-        throw Error('That post does not exist')
-      }
-      post.value = await data.json()
-    }
-    catch (err) {
-      error.value = err.message
-    }
+  const post = computed(() => store.getters.post)
+
+  const load = () => {
+    store.dispatch(FETCH_POST, { id })
   }
 
-  return { post, error, load }
+  const unload = () => {
+    store.commit(SET_POST, null)
+  }
+
+  return { post, load, unload }
+
 }
 
 export default getPost

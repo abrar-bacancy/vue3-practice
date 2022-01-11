@@ -1,5 +1,5 @@
 <template>
-  <div class="row px-5 py-2" v-if="posts.length">
+  <div class="row" v-if="posts.length">
     <div class="col-9">
       <PostList :posts="posts" />
     </div>
@@ -20,11 +20,11 @@ export default {
     TagList
   },
   setup() {
-    const { posts, error, load } = getPosts()
+    const { posts, load } = getPosts()
 
     load()
 
-    return { posts, error }
+    return { posts }
   }
 }
 </script>
